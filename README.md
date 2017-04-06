@@ -1,2 +1,1 @@
-# sentral-hub
-Driver for the EM7180 sensor fusion hub (MPU9250 IMU + BMP280 barometer)
+This repo contains driver code for the EM7180 sensor fusion hub (MPU9250 IMU + BMP280 barometer) available [here](https://www.tindie.com/products/onehorse/ultimate-sensor-fusion-solution/). It is simply a port of [this example sketch](https://github.com/kriswiner/EM7180_SENtral_sensor_hub/blob/2b48ba22ae856d1f392b3a30ddb157a107cb2c7d/EM7180_MPU9250%2BBMP280.ino) by Kris Winer to a C++ class to improve usability.
