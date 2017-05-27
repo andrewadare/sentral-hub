@@ -5,7 +5,7 @@
 
 SENtral::SENtral()
 {
-  for (int i=0; i<3; i++)
+  for (int i = 0; i < 3; i++)
   {
     accelCount[i] = 0;
     gyroCount[i] = 0;
@@ -16,9 +16,9 @@ SENtral::SENtral()
     magBias[i] = 0;
     magScale[i] = 0;
   }
-  for (int i=0; i<4; i++)
+  for (int i = 0; i < 4; i++)
     q[i] = 0;
-  for (int i=0; i<6; i++)
+  for (int i = 0; i < 6; i++)
     SelfTest[i] = 0;
 
   declination = 0;
@@ -72,7 +72,7 @@ void SENtral::configureDefault()
   writeByte(EM7180_ADDRESS, EM7180_ParamRequest, 0x4A); // Request to read parameter 74
   writeByte(EM7180_ADDRESS, EM7180_AlgorithmControl, 0x80); // Request parameter transfer process
   byte param_xfer = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
-  while (!(param_xfer==0x4A))
+  while (!(param_xfer == 0x4A))
   {
     param_xfer = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
   }
@@ -80,8 +80,8 @@ void SENtral::configureDefault()
   param[1] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte1);
   param[2] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte2);
   param[3] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte3);
-  EM7180_mag_fs = ((int16_t)(param[1]<<8) | param[0]);
-  EM7180_acc_fs = ((int16_t)(param[3]<<8) | param[2]);
+  EM7180_mag_fs = ((int16_t)(param[1] << 8) | param[0]);
+  EM7180_acc_fs = ((int16_t)(param[3] << 8) | param[2]);
   Serial.print("Magnetometer Default Full Scale Range: +/-");
   Serial.print(EM7180_mag_fs);
   Serial.println("uT");
@@ -90,7 +90,7 @@ void SENtral::configureDefault()
   Serial.println("g");
   writeByte(EM7180_ADDRESS, EM7180_ParamRequest, 0x4B); // Request to read  parameter 75
   param_xfer = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
-  while (!(param_xfer==0x4B))
+  while (!(param_xfer == 0x4B))
   {
     param_xfer = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
   }
@@ -98,7 +98,7 @@ void SENtral::configureDefault()
   param[1] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte1);
   param[2] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte2);
   param[3] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte3);
-  EM7180_gyro_fs = ((int16_t)(param[1]<<8) | param[0]);
+  EM7180_gyro_fs = ((int16_t)(param[1] << 8) | param[0]);
   Serial.print("Gyroscope Default Full Scale Range: +/-");
   Serial.print(EM7180_gyro_fs);
   Serial.println("dps");
@@ -116,7 +116,7 @@ void SENtral::configureDefault()
   writeByte(EM7180_ADDRESS, EM7180_ParamRequest, 0x4A); // Request to read  parameter 74
   writeByte(EM7180_ADDRESS, EM7180_AlgorithmControl, 0x80); // Request parameter transfer process
   param_xfer = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
-  while (!(param_xfer==0x4A))
+  while (!(param_xfer == 0x4A))
   {
     param_xfer = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
   }
@@ -124,8 +124,8 @@ void SENtral::configureDefault()
   param[1] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte1);
   param[2] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte2);
   param[3] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte3);
-  EM7180_mag_fs = ((int16_t)(param[1]<<8) | param[0]);
-  EM7180_acc_fs = ((int16_t)(param[3]<<8) | param[2]);
+  EM7180_mag_fs = ((int16_t)(param[1] << 8) | param[0]);
+  EM7180_acc_fs = ((int16_t)(param[3] << 8) | param[2]);
   Serial.print("Magnetometer New Full Scale Range: +/-");
   Serial.print(EM7180_mag_fs);
   Serial.println("uT");
@@ -134,7 +134,7 @@ void SENtral::configureDefault()
   Serial.println("g");
   writeByte(EM7180_ADDRESS, EM7180_ParamRequest, 0x4B); // Request to read  parameter 75
   param_xfer = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
-  while (!(param_xfer==0x4B))
+  while (!(param_xfer == 0x4B))
   {
     param_xfer = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
   }
@@ -142,7 +142,7 @@ void SENtral::configureDefault()
   param[1] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte1);
   param[2] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte2);
   param[3] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte3);
-  EM7180_gyro_fs = ((int16_t)(param[1]<<8) | param[0]);
+  EM7180_gyro_fs = ((int16_t)(param[1] << 8) | param[0]);
   Serial.print("Gyroscope New Full Scale Range: +/-");
   Serial.print(EM7180_gyro_fs);
   Serial.println("dps");
@@ -186,10 +186,10 @@ void SENtral::configureDefault()
   Serial.print(readByte(EM7180_ADDRESS, EM7180_ActualMagRate));
   Serial.println(" Hz");
   Serial.print("Actual AccelRate = ");
-  Serial.print(10*readByte(EM7180_ADDRESS, EM7180_ActualAccelRate));
+  Serial.print(10 * readByte(EM7180_ADDRESS, EM7180_ActualAccelRate));
   Serial.println(" Hz");
   Serial.print("Actual GyroRate = ");
-  Serial.print(10*readByte(EM7180_ADDRESS, EM7180_ActualGyroRate));
+  Serial.print(10 * readByte(EM7180_ADDRESS, EM7180_ActualGyroRate));
   Serial.println(" Hz");
   Serial.print("Actual BaroRate = ");
   Serial.print(readByte(EM7180_ADDRESS, EM7180_ActualBaroRate));
@@ -236,22 +236,22 @@ void SENtral::configurePassThru()
 
     MPU9250SelfTest(SelfTest); // Start by performing self test and reporting values
     Serial.print("x-axis self test: acceleration trim within : ");
-    Serial.print(SelfTest[0],1);
+    Serial.print(SelfTest[0], 1);
     Serial.println("% of factory value");
     Serial.print("y-axis self test: acceleration trim within : ");
-    Serial.print(SelfTest[1],1);
+    Serial.print(SelfTest[1], 1);
     Serial.println("% of factory value");
     Serial.print("z-axis self test: acceleration trim within : ");
-    Serial.print(SelfTest[2],1);
+    Serial.print(SelfTest[2], 1);
     Serial.println("% of factory value");
     Serial.print("x-axis self test: gyration trim within : ");
-    Serial.print(SelfTest[3],1);
+    Serial.print(SelfTest[3], 1);
     Serial.println("% of factory value");
     Serial.print("y-axis self test: gyration trim within : ");
-    Serial.print(SelfTest[4],1);
+    Serial.print(SelfTest[4], 1);
     Serial.println("% of factory value");
     Serial.print("z-axis self test: gyration trim within : ");
-    Serial.print(SelfTest[5],1);
+    Serial.print(SelfTest[5], 1);
     Serial.println("% of factory value");
     delay(1000);
 
@@ -368,6 +368,20 @@ void SENtral::configurePassThru()
   }
 }
 
+void SENtral::printStatus()
+{
+  if (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x01)
+    Serial.println("EEPROM detected on the sensor bus!");
+  if (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x02)
+    Serial.println("EEPROM uploaded config file!");
+  if (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x04)
+    Serial.println("EEPROM CRC incorrect!");
+  if (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x08)
+    Serial.println("EM7180 in initialized state!");
+  if (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x10)
+    Serial.println("No EEPROM detected!");
+}
+
 void SENtral::printDeviceInfo()
 {
   // Read SENtral device information
@@ -408,16 +422,7 @@ void SENtral::printDeviceInfo()
 
   // Check SENtral status, make sure EEPROM upload of firmware was accomplished
   byte STAT = (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x01);
-  if (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x01)
-    Serial.println("EEPROM detected on the sensor bus!");
-  if (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x02)
-    Serial.println("EEPROM uploaded config file!");
-  if (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x04)
-    Serial.println("EEPROM CRC incorrect!");
-  if (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x08)
-    Serial.println("EM7180 in initialized state!");
-  if (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x10)
-    Serial.println("No EEPROM detected!");
+  printStatus();
   int count = 0;
   while (!STAT)
   {
@@ -425,17 +430,9 @@ void SENtral::printDeviceInfo()
     delay(500);
     count++;
     STAT = (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x01);
-    if (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x01)
-      Serial.println("EEPROM detected on the sensor bus!");
-    if (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x02)
-      Serial.println("EEPROM uploaded config file!");
-    if (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x04)
-      Serial.println("EEPROM CRC incorrect!");
-    if (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x08)
-      Serial.println("EM7180 in initialized state!");
-    if (readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x10)
-      Serial.println("No EEPROM detected!");
-    if (count > 10) break;
+    printStatus();
+    if (count > 10)
+      break;
   }
 
   if (!(readByte(EM7180_ADDRESS, EM7180_SentralStatus) & 0x04))
@@ -472,9 +469,9 @@ void SENtral::readSensors()
     readSENtralAccelData(accelCount);
 
     // Now we'll calculate the accleration value into actual g's
-    ax = (float)accelCount[0]*0.000488;  // get actual g value
-    ay = (float)accelCount[1]*0.000488;
-    az = (float)accelCount[2]*0.000488;
+    ax = (float)accelCount[0] * 0.000488; // get actual g value
+    ay = (float)accelCount[1] * 0.000488;
+    az = (float)accelCount[2] * 0.000488;
   }
 
   if (eventStatus & 0x20)  // new gyro data available
@@ -482,9 +479,9 @@ void SENtral::readSensors()
     readSENtralGyroData(gyroCount);
 
     // Now we'll calculate the gyro value into actual dps's
-    gx = (float)gyroCount[0]*0.153;  // get actual dps value
-    gy = (float)gyroCount[1]*0.153;
-    gz = (float)gyroCount[2]*0.153;
+    gx = (float)gyroCount[0] * 0.153; // get actual dps value
+    gy = (float)gyroCount[1] * 0.153;
+    gz = (float)gyroCount[2] * 0.153;
   }
 
   if (eventStatus & 0x08)  // new mag data available
@@ -492,9 +489,9 @@ void SENtral::readSensors()
     readSENtralMagData(magCount);
 
     // Now we'll calculate the mag value into actual G's
-    mx = (float)magCount[0]*0.305176;  // get actual G value
-    my = (float)magCount[1]*0.305176;
-    mz = (float)magCount[2]*0.305176;
+    mx = (float)magCount[0] * 0.305176; // get actual G value
+    my = (float)magCount[1] * 0.305176;
+    mz = (float)magCount[2] * 0.305176;
   }
 
   if (eventStatus & 0x04)  // new quaternion data available
@@ -506,20 +503,20 @@ void SENtral::readSensors()
   if (eventStatus & 0x40)  // new baro data available
   {
     rawPressure = readSENtralBaroData();
-    pressure = (float)rawPressure*0.01f +1013.25f; // pressure in mBar
+    pressure = (float)rawPressure * 0.01f + 1013.25f; // pressure in mBar
 
     // get BMP280 temperature
     rawTemperature = readSENtralTempData();
-    temperature = (float) rawTemperature*0.01;  // temperature in degrees C
+    temperature = (float) rawTemperature * 0.01; // temperature in degrees C
   }
 }
 
 void SENtral::update()
 {
   readSensors();
-  yaw   = atan2(2.0f*(q[0]*q[1] + q[3]*q[2]), q[3]*q[3] + q[0]*q[0] - q[1]*q[1] - q[2]*q[2]);
-  pitch = -asin(2.0f*(q[0]*q[2] - q[3]*q[1]));
-  roll  = atan2(2.0f*(q[3]*q[0] + q[1]*q[2]), q[3]*q[3] - q[0]*q[0] - q[1]*q[1] + q[2]*q[2]);
+  yaw   = atan2(2.0f * (q[0] * q[1] + q[3] * q[2]), q[3] * q[3] + q[0] * q[0] - q[1] * q[1] - q[2] * q[2]);
+  pitch = -asin(2.0f * (q[0] * q[2] - q[3] * q[1]));
+  roll  = atan2(2.0f * (q[3] * q[0] + q[1] * q[2]), q[3] * q[3] - q[0] * q[0] - q[1] * q[1] + q[2] * q[2]);
   pitch *= 180.0f / PI;
   yaw   *= 180.0f / PI;
   yaw   += declination;
@@ -550,14 +547,14 @@ void SENtral::float_to_bytes(float param_val, uint8_t *buf)
     uint8_t comp[sizeof(float)];
   } u;
   u.f = param_val;
-  for (uint8_t i=0; i < sizeof(float); i++)
+  for (uint8_t i = 0; i < sizeof(float); i++)
   {
     buf[i] = u.comp[i];
   }
   //Convert to LITTLE ENDIAN
-  for (uint8_t i=0; i < sizeof(float); i++)
+  for (uint8_t i = 0; i < sizeof(float); i++)
   {
-    buf[i] = buf[(sizeof(float)-1) - i];
+    buf[i] = buf[(sizeof(float) - 1) - i];
   }
 }
 
@@ -575,7 +572,7 @@ void SENtral::EM7180_set_gyro_FS(uint16_t gyro_fs)
   writeByte(EM7180_ADDRESS, EM7180_ParamRequest, 0xCB); //Parameter 75; 0xCB is 75 decimal with the MSB set high to indicate a paramter write processs
   writeByte(EM7180_ADDRESS, EM7180_AlgorithmControl, 0x80); //Request parameter transfer procedure
   STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge); //Check the parameter acknowledge register and loop until the result matches parameter request byte
-  while (!(STAT==0xCB))
+  while (!(STAT == 0xCB))
   {
     STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
   }
@@ -597,7 +594,7 @@ void SENtral::EM7180_set_mag_acc_FS(uint16_t mag_fs, uint16_t acc_fs)
   writeByte(EM7180_ADDRESS, EM7180_ParamRequest, 0xCA); //Parameter 74; 0xCA is 74 decimal with the MSB set high to indicate a paramter write processs
   writeByte(EM7180_ADDRESS, EM7180_AlgorithmControl, 0x80); //Request parameter transfer procedure
   STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge); //Check the parameter acknowledge register and loop until the result matches parameter request byte
-  while (!(STAT==0xCA))
+  while (!(STAT == 0xCA))
   {
     STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
   }
@@ -620,7 +617,7 @@ void SENtral::EM7180_set_integer_param(uint8_t param, uint32_t param_val)
   writeByte(EM7180_ADDRESS, EM7180_ParamRequest, param);
   writeByte(EM7180_ADDRESS, EM7180_AlgorithmControl, 0x80); //Request parameter transfer procedure
   STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge); //Check the parameter acknowledge register and loop until the result matches parameter request byte
-  while (!(STAT==param))
+  while (!(STAT == param))
   {
     STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
   }
@@ -640,7 +637,7 @@ void SENtral::EM7180_set_float_param(uint8_t param, float param_val)
   writeByte(EM7180_ADDRESS, EM7180_ParamRequest, param);
   writeByte(EM7180_ADDRESS, EM7180_AlgorithmControl, 0x80); //Request parameter transfer procedure
   STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge); //Check the parameter acknowledge register and loop until the result matches parameter request byte
-  while (!(STAT==param))
+  while (!(STAT == param))
   {
     STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
   }
@@ -692,10 +689,10 @@ void SENtral::getMres()
   // Possible magnetometer scales (and their register bit settings) are:
   // 14 bit resolution (0) and 16 bit resolution (1)
   case MFS_14BITS:
-    mRes = 10.*4912./8190.; // Proper scale to return milliGauss
+    mRes = 10.*4912. / 8190.; // Proper scale to return milliGauss
     break;
   case MFS_16BITS:
-    mRes = 10.*4912./32760.0; // Proper scale to return milliGauss
+    mRes = 10.*4912. / 32760.0; // Proper scale to return milliGauss
     break;
   }
 }
@@ -708,16 +705,16 @@ void SENtral::getGres()
   // 250 DPS (00), 500 DPS (01), 1000 DPS (10), and 2000 DPS  (11).
   // Here's a bit of an algorith to calculate DPS/(ADC tick) based on that 2-bit value:
   case GFS_250DPS:
-    gRes = 250.0/32768.0;
+    gRes = 250.0 / 32768.0;
     break;
   case GFS_500DPS:
-    gRes = 500.0/32768.0;
+    gRes = 500.0 / 32768.0;
     break;
   case GFS_1000DPS:
-    gRes = 1000.0/32768.0;
+    gRes = 1000.0 / 32768.0;
     break;
   case GFS_2000DPS:
-    gRes = 2000.0/32768.0;
+    gRes = 2000.0 / 32768.0;
     break;
   }
 }
@@ -730,16 +727,16 @@ void SENtral::getAres()
   // 2 Gs (00), 4 Gs (01), 8 Gs (10), and 16 Gs  (11).
   // Here's a bit of an algorith to calculate DPS/(ADC tick) based on that 2-bit value:
   case AFS_2G:
-    aRes = 2.0/32768.0;
+    aRes = 2.0 / 32768.0;
     break;
   case AFS_4G:
-    aRes = 4.0/32768.0;
+    aRes = 4.0 / 32768.0;
     break;
   case AFS_8G:
-    aRes = 8.0/32768.0;
+    aRes = 8.0 / 32768.0;
     break;
   case AFS_16G:
-    aRes = 16.0/32768.0;
+    aRes = 16.0 / 32768.0;
     break;
   }
 }
@@ -794,9 +791,9 @@ void SENtral::initAK8963(float *destination)
   writeByte(AK8963_ADDRESS, AK8963_CNTL, 0x0F); // Enter Fuse ROM access mode
   delay(20);
   readBytes(AK8963_ADDRESS, AK8963_ASAX, 3, &rawData[0]);  // Read the x-, y-, and z-axis calibration values
-  destination[0] = (float)(rawData[0] - 128)/256. + 1.;    // Return x-axis sensitivity adjustment values, etc.
-  destination[1] = (float)(rawData[1] - 128)/256. + 1.;
-  destination[2] = (float)(rawData[2] - 128)/256. + 1.;
+  destination[0] = (float)(rawData[0] - 128) / 256. + 1.;  // Return x-axis sensitivity adjustment values, etc.
+  destination[1] = (float)(rawData[1] - 128) / 256. + 1.;
+  destination[2] = (float)(rawData[2] - 128) / 256. + 1.;
   writeByte(AK8963_ADDRESS, AK8963_CNTL, 0x00); // Power down magnetometer
   delay(20);
   // Configure the magnetometer for continuous read and highest resolution
@@ -910,7 +907,7 @@ void SENtral::accelgyrocalMPU9250(float *dest1, float *dest2)
   writeByte(MPU9250_ADDRESS, FIFO_EN, 0x00);        // Disable gyro and accelerometer sensors for FIFO
   readBytes(MPU9250_ADDRESS, FIFO_COUNTH, 2, &data[0]); // read FIFO sample count
   fifo_count = ((uint16_t)data[0] << 8) | data[1];
-  packet_count = fifo_count/12;// How many sets of full gyro and accelerometer data for averaging
+  packet_count = fifo_count / 12; // How many sets of full gyro and accelerometer data for averaging
 
   for (ii = 0; ii < packet_count; ii++)
   {
@@ -942,12 +939,12 @@ void SENtral::accelgyrocalMPU9250(float *dest1, float *dest2)
   else {accel_bias[2] += (int32_t) accelsensitivity;}
 
   // Construct the gyro biases for push to the hardware gyro bias registers, which are reset to zero upon device startup
-  data[0] = (-gyro_bias[0]/4  >> 8) & 0xFF; // Divide by 4 to get 32.9 LSB per deg/s to conform to expected bias input format
-  data[1] = (-gyro_bias[0]/4)       & 0xFF; // Biases are additive, so change sign on calculated average gyro biases
-  data[2] = (-gyro_bias[1]/4  >> 8) & 0xFF;
-  data[3] = (-gyro_bias[1]/4)       & 0xFF;
-  data[4] = (-gyro_bias[2]/4  >> 8) & 0xFF;
-  data[5] = (-gyro_bias[2]/4)       & 0xFF;
+  data[0] = (-gyro_bias[0] / 4  >> 8) & 0xFF; // Divide by 4 to get 32.9 LSB per deg/s to conform to expected bias input format
+  data[1] = (-gyro_bias[0] / 4)       & 0xFF; // Biases are additive, so change sign on calculated average gyro biases
+  data[2] = (-gyro_bias[1] / 4  >> 8) & 0xFF;
+  data[3] = (-gyro_bias[1] / 4)       & 0xFF;
+  data[4] = (-gyro_bias[2] / 4  >> 8) & 0xFF;
+  data[5] = (-gyro_bias[2] / 4)       & 0xFF;
 
   // Push gyro biases to hardware registers
   writeByte(MPU9250_ADDRESS, XG_OFFSET_H, data[0]);
@@ -958,9 +955,9 @@ void SENtral::accelgyrocalMPU9250(float *dest1, float *dest2)
   writeByte(MPU9250_ADDRESS, ZG_OFFSET_L, data[5]);
 
   // Output scaled gyro biases for display in the main program
-  dest1[0] = (float) gyro_bias[0]/(float) gyrosensitivity;
-  dest1[1] = (float) gyro_bias[1]/(float) gyrosensitivity;
-  dest1[2] = (float) gyro_bias[2]/(float) gyrosensitivity;
+  dest1[0] = (float) gyro_bias[0] / (float) gyrosensitivity;
+  dest1[1] = (float) gyro_bias[1] / (float) gyrosensitivity;
+  dest1[2] = (float) gyro_bias[2] / (float) gyrosensitivity;
 
   // Construct the accelerometer biases for push to the hardware accelerometer bias registers. These registers contain
   // factory trim values which must be added to the calculated accelerometer biases; on boot up these registers will hold
@@ -985,9 +982,9 @@ void SENtral::accelgyrocalMPU9250(float *dest1, float *dest2)
   }
 
   // Construct total accelerometer bias, including calculated average accelerometer bias from above
-  accel_bias_reg[0] -= (accel_bias[0]/8); // Subtract calculated averaged accelerometer bias scaled to 2048 LSB/g (16 g full scale)
-  accel_bias_reg[1] -= (accel_bias[1]/8);
-  accel_bias_reg[2] -= (accel_bias[2]/8);
+  accel_bias_reg[0] -= (accel_bias[0] / 8); // Subtract calculated averaged accelerometer bias scaled to 2048 LSB/g (16 g full scale)
+  accel_bias_reg[1] -= (accel_bias[1] / 8);
+  accel_bias_reg[2] -= (accel_bias[2] / 8);
 
   data[0] = (accel_bias_reg[0] >> 8) & 0xFE;
   data[1] = (accel_bias_reg[0])      & 0xFE;
@@ -1010,9 +1007,9 @@ void SENtral::accelgyrocalMPU9250(float *dest1, float *dest2)
     writeByte(MPU9250_ADDRESS, ZA_OFFSET_L, data[5]);
   */
   // Output scaled accelerometer biases for display in the main program
-  dest2[0] = (float)accel_bias[0]/(float)accelsensitivity;
-  dest2[1] = (float)accel_bias[1]/(float)accelsensitivity;
-  dest2[2] = (float)accel_bias[2]/(float)accelsensitivity;
+  dest2[0] = (float)accel_bias[0] / (float)accelsensitivity;
+  dest2[1] = (float)accel_bias[1] / (float)accelsensitivity;
+  dest2[2] = (float)accel_bias[2] / (float)accelsensitivity;
 }
 
 void SENtral::magcalMPU9250(float *dest1, float *dest2)
@@ -1039,25 +1036,25 @@ void SENtral::magcalMPU9250(float *dest1, float *dest2)
   }
 
   // Get hard iron correction
-  mag_bias[0]  = (mag_max[0] + mag_min[0])/2;  // get average x mag bias in counts
-  mag_bias[1]  = (mag_max[1] + mag_min[1])/2;  // get average y mag bias in counts
-  mag_bias[2]  = (mag_max[2] + mag_min[2])/2;  // get average z mag bias in counts
+  mag_bias[0]  = (mag_max[0] + mag_min[0]) / 2; // get average x mag bias in counts
+  mag_bias[1]  = (mag_max[1] + mag_min[1]) / 2; // get average y mag bias in counts
+  mag_bias[2]  = (mag_max[2] + mag_min[2]) / 2; // get average z mag bias in counts
 
-  dest1[0] = (float) mag_bias[0]*mRes*magCalibration[0];  // save mag biases in G for main program
-  dest1[1] = (float) mag_bias[1]*mRes*magCalibration[1];
-  dest1[2] = (float) mag_bias[2]*mRes*magCalibration[2];
+  dest1[0] = (float) mag_bias[0] * mRes * magCalibration[0]; // save mag biases in G for main program
+  dest1[1] = (float) mag_bias[1] * mRes * magCalibration[1];
+  dest1[2] = (float) mag_bias[2] * mRes * magCalibration[2];
 
   // Get soft iron correction estimate
-  mag_scale[0]  = (mag_max[0] - mag_min[0])/2;  // get average x axis max chord length in counts
-  mag_scale[1]  = (mag_max[1] - mag_min[1])/2;  // get average y axis max chord length in counts
-  mag_scale[2]  = (mag_max[2] - mag_min[2])/2;  // get average z axis max chord length in counts
+  mag_scale[0]  = (mag_max[0] - mag_min[0]) / 2; // get average x axis max chord length in counts
+  mag_scale[1]  = (mag_max[1] - mag_min[1]) / 2; // get average y axis max chord length in counts
+  mag_scale[2]  = (mag_max[2] - mag_min[2]) / 2; // get average z axis max chord length in counts
 
   float avg_rad = mag_scale[0] + mag_scale[1] + mag_scale[2];
   avg_rad /= 3.0;
 
-  dest2[0] = avg_rad/((float)mag_scale[0]);
-  dest2[1] = avg_rad/((float)mag_scale[1]);
-  dest2[2] = avg_rad/((float)mag_scale[2]);
+  dest2[0] = avg_rad / ((float)mag_scale[0]);
+  dest2[1] = avg_rad / ((float)mag_scale[1]);
+  dest2[2] = avg_rad / ((float)mag_scale[2]);
 
   Serial.println("Mag Calibration done!");
 }
@@ -1073,9 +1070,9 @@ void SENtral::MPU9250SelfTest(float *destination) // Should return percent devia
 
   writeByte(MPU9250_ADDRESS, SMPLRT_DIV, 0x00);    // Set gyro sample rate to 1 kHz
   writeByte(MPU9250_ADDRESS, CONFIG, 0x02);        // Set gyro sample rate to 1 kHz and DLPF to 92 Hz
-  writeByte(MPU9250_ADDRESS, GYRO_CONFIG, FS<<3);  // Set full scale range for the gyro to 250 dps
+  writeByte(MPU9250_ADDRESS, GYRO_CONFIG, FS << 3); // Set full scale range for the gyro to 250 dps
   writeByte(MPU9250_ADDRESS, ACCEL_CONFIG2, 0x02); // Set accelerometer rate to 1 kHz and bandwidth to 92 Hz
-  writeByte(MPU9250_ADDRESS, ACCEL_CONFIG, FS<<3); // Set full scale range for the accelerometer to 2 g
+  writeByte(MPU9250_ADDRESS, ACCEL_CONFIG, FS << 3); // Set full scale range for the accelerometer to 2 g
 
   for (int ii = 0; ii < 200; ii++)    // get average current values of gyro and acclerometer
   {
@@ -1091,7 +1088,7 @@ void SENtral::MPU9250SelfTest(float *destination) // Should return percent devia
     gAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
   }
 
-  for (int ii =0; ii < 3; ii++)    // Get average of 200 values and store as average current readings
+  for (int ii = 0; ii < 3; ii++)   // Get average of 200 values and store as average current readings
   {
     aAvg[ii] /= 200;
     gAvg[ii] /= 200;
@@ -1115,7 +1112,7 @@ void SENtral::MPU9250SelfTest(float *destination) // Should return percent devia
     gSTAvg[2] += (int16_t)(((int16_t)rawData[4] << 8) | rawData[5]) ;
   }
 
-  for (int ii =0; ii < 3; ii++)    // Get average of 200 values and store as average self-test readings
+  for (int ii = 0; ii < 3; ii++)   // Get average of 200 values and store as average self-test readings
   {
     aSTAvg[ii] /= 200;
     gSTAvg[ii] /= 200;
@@ -1135,19 +1132,19 @@ void SENtral::MPU9250SelfTest(float *destination) // Should return percent devia
   selfTest[5] = readByte(MPU9250_ADDRESS, SELF_TEST_Z_GYRO);  // Z-axis gyro self-test results
 
   // Retrieve factory self-test value from self-test code reads
-  factoryTrim[0] = (float)(2620/1<<FS)*(pow(1.01 , ((float)selfTest[0] - 1.0)));   // FT[Xa] factory trim calculation
-  factoryTrim[1] = (float)(2620/1<<FS)*(pow(1.01 , ((float)selfTest[1] - 1.0)));   // FT[Ya] factory trim calculation
-  factoryTrim[2] = (float)(2620/1<<FS)*(pow(1.01 , ((float)selfTest[2] - 1.0)));   // FT[Za] factory trim calculation
-  factoryTrim[3] = (float)(2620/1<<FS)*(pow(1.01 , ((float)selfTest[3] - 1.0)));   // FT[Xg] factory trim calculation
-  factoryTrim[4] = (float)(2620/1<<FS)*(pow(1.01 , ((float)selfTest[4] - 1.0)));   // FT[Yg] factory trim calculation
-  factoryTrim[5] = (float)(2620/1<<FS)*(pow(1.01 , ((float)selfTest[5] - 1.0)));   // FT[Zg] factory trim calculation
+  factoryTrim[0] = (float)(2620 / 1 << FS) * (pow(1.01 , ((float)selfTest[0] - 1.0))); // FT[Xa] factory trim calculation
+  factoryTrim[1] = (float)(2620 / 1 << FS) * (pow(1.01 , ((float)selfTest[1] - 1.0))); // FT[Ya] factory trim calculation
+  factoryTrim[2] = (float)(2620 / 1 << FS) * (pow(1.01 , ((float)selfTest[2] - 1.0))); // FT[Za] factory trim calculation
+  factoryTrim[3] = (float)(2620 / 1 << FS) * (pow(1.01 , ((float)selfTest[3] - 1.0))); // FT[Xg] factory trim calculation
+  factoryTrim[4] = (float)(2620 / 1 << FS) * (pow(1.01 , ((float)selfTest[4] - 1.0))); // FT[Yg] factory trim calculation
+  factoryTrim[5] = (float)(2620 / 1 << FS) * (pow(1.01 , ((float)selfTest[5] - 1.0))); // FT[Zg] factory trim calculation
 
   // Report results as a ratio of (STR - FT)/FT; the change from Factory Trim of the Self-Test Response
   // To get percent, must multiply by 100
   for (int i = 0; i < 3; i++)
   {
-    destination[i]   = 100.0*((float)(aSTAvg[i] - aAvg[i]))/factoryTrim[i];   // Report percent differences
-    destination[i+3] = 100.0*((float)(gSTAvg[i] - gAvg[i]))/factoryTrim[i+3]; // Report percent differences
+    destination[i]   = 100.0 * ((float)(aSTAvg[i] - aAvg[i])) / factoryTrim[i]; // Report percent differences
+    destination[i + 3] = 100.0 * ((float)(gSTAvg[i] - gAvg[i])) / factoryTrim[i + 3]; // Report percent differences
   }
 
 }
@@ -1210,7 +1207,7 @@ void SENtral::M24512DFMwriteBytes(uint8_t device_address, uint8_t data_address1,
   Wire.beginTransmission(device_address);   // Initialize the Tx buffer
   Wire.write(data_address1);                // Put slave register address in Tx buffer
   Wire.write(data_address2);                // Put slave register address in Tx buffer
-  for (uint8_t i=0; i < count; i++)
+  for (uint8_t i = 0; i < count; i++)
   {
     Wire.write(dest[i]);                      // Put data in Tx buffer
   }
@@ -1305,20 +1302,20 @@ uint32_t SENtral::bmp280_compensate_P(int32_t adc_P)
   long long var1, var2, p;
   var1 = ((long long)t_fine) - 128000;
   var2 = var1 * var1 * (long long)dig_P6;
-  var2 = var2 + ((var1*(long long)dig_P5)<<17);
-  var2 = var2 + (((long long)dig_P4)<<35);
-  var1 = ((var1 * var1 * (long long)dig_P3)>>8) + ((var1 * (long long)dig_P2)<<12);
-  var1 = (((((long long)1)<<47)+var1))*((long long)dig_P1)>>33;
+  var2 = var2 + ((var1 * (long long)dig_P5) << 17);
+  var2 = var2 + (((long long)dig_P4) << 35);
+  var1 = ((var1 * var1 * (long long)dig_P3) >> 8) + ((var1 * (long long)dig_P2) << 12);
+  var1 = (((((long long)1) << 47) + var1)) * ((long long)dig_P1) >> 33;
   if (var1 == 0)
   {
     return 0;
     // avoid exception caused by division by zero
   }
   p = 1048576 - adc_P;
-  p = (((p<<31) - var2)*3125)/var1;
-  var1 = (((long long)dig_P9) * (p>>13) * (p>>13)) >> 25;
-  var2 = (((long long)dig_P8) * p)>> 19;
-  p = ((p + var1 + var2) >> 8) + (((long long)dig_P7)<<4);
+  p = (((p << 31) - var2) * 3125) / var1;
+  var1 = (((long long)dig_P9) * (p >> 13) * (p >> 13)) >> 25;
+  var2 = (((long long)dig_P8) * p) >> 19;
+  p = ((p + var1 + var2) >> 8) + (((long long)dig_P7) << 4);
   return (uint32_t)p;
 }
 
@@ -1343,19 +1340,19 @@ void SENtral::I2Cscan()
     if (error == 0)
     {
       Serial.print("I2C device found at address 0x");
-      if (address<16)
+      if (address < 16)
         Serial.print("0");
-      Serial.print(address,HEX);
+      Serial.print(address, HEX);
       Serial.println("  !");
 
       nDevices++;
     }
-    else if (error==4)
+    else if (error == 4)
     {
       Serial.print("Unknow error at address 0x");
-      if (address<16)
+      if (address < 16)
         Serial.print("0");
-      Serial.println(address,HEX);
+      Serial.println(address, HEX);
     }
   }
   if (nDevices == 0)

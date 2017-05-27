@@ -7,7 +7,7 @@
 SENtral imu;
 
 elapsedMillis printTimer = 0;
-unsigned int printerval = 500; // ms
+unsigned int printerval = 50; // ms
 
 void printSentralData()
 {
@@ -47,8 +47,8 @@ void setup()
   // TWBR = 12;  // 400 kbit/sec I2C speed for Pro Mini
   // Setup for Master mode, pins 18/19, external pullups, 400kHz for Teensy 3.1
   Wire.begin(I2C_MASTER, 0x00, I2C_PINS_16_17, I2C_PULLUP_EXT, I2C_RATE_400);
-  delay(5000);
-  Serial.begin(38400);
+  delay(1000);
+  Serial.begin(115200);
 
   pinMode(MCU_LED_PIN, OUTPUT);
   digitalWrite(MCU_LED_PIN, LOW);
@@ -57,23 +57,20 @@ void setup()
   imu.printDeviceInfo();
   imu.configure();
 
-  // Mag. declination in Boulder, CO (39d 58m 47s N, 105d 15m 9s W)
+  // Set declination here to use true north instead of mag. north.
+  // Mag. declination in Boulder, CO (39d 58m 47s N, 105d 15m 9s W):
+  // 8.45 +/- 0.35 deg.
   // https://www.ngdc.noaa.gov/geomag-web/#declination
-  // Uncertainty: +/- 0.35 deg.
   // imu.declination = 8.45;
   imu.declination = 0;
-
-  delay(1000); // give some time to read the screen
 }
 
 void loop()
 {
   imu.update();
-
   if (printTimer >= printerval)
   {
     printTimer -= printerval;
     printSentralData();
   }
-
 }

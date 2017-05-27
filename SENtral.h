@@ -329,6 +329,7 @@ public:
   void configurePassThru();
   void readSensors();
   void update();
+  void printStatus();
   float uint32_reg_to_float(uint8_t *buf);
   void float_to_bytes(float param_val, uint8_t *buf);
   void EM7180_set_gyro_FS(uint16_t gyro_fs);
