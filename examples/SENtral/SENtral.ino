@@ -60,7 +60,8 @@ void setup()
   // Mag. declination in Boulder, CO (39d 58m 47s N, 105d 15m 9s W)
   // https://www.ngdc.noaa.gov/geomag-web/#declination
   // Uncertainty: +/- 0.35 deg.
-  imu.declination = 8.45;
+  // imu.declination = 8.45;
+  imu.declination = 0;
 
   delay(1000); // give some time to read the screen
 }
