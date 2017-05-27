@@ -82,8 +82,12 @@ void SENtral::configureDefault()
   param[3] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte3);
   EM7180_mag_fs = ((int16_t)(param[1]<<8) | param[0]);
   EM7180_acc_fs = ((int16_t)(param[3]<<8) | param[2]);
-  Serial.print("Magnetometer Default Full Scale Range: +/-"); Serial.print(EM7180_mag_fs); Serial.println("uT");
-  Serial.print("Accelerometer Default Full Scale Range: +/-"); Serial.print(EM7180_acc_fs); Serial.println("g");
+  Serial.print("Magnetometer Default Full Scale Range: +/-");
+  Serial.print(EM7180_mag_fs);
+  Serial.println("uT");
+  Serial.print("Accelerometer Default Full Scale Range: +/-");
+  Serial.print(EM7180_acc_fs);
+  Serial.println("g");
   writeByte(EM7180_ADDRESS, EM7180_ParamRequest, 0x4B); // Request to read  parameter 75
   param_xfer = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
   while (!(param_xfer==0x4B))
@@ -95,7 +99,9 @@ void SENtral::configureDefault()
   param[2] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte2);
   param[3] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte3);
   EM7180_gyro_fs = ((int16_t)(param[1]<<8) | param[0]);
-  Serial.print("Gyroscope Default Full Scale Range: +/-"); Serial.print(EM7180_gyro_fs); Serial.println("dps");
+  Serial.print("Gyroscope Default Full Scale Range: +/-");
+  Serial.print(EM7180_gyro_fs);
+  Serial.println("dps");
   writeByte(EM7180_ADDRESS, EM7180_ParamRequest, 0x00); //End parameter transfer
   writeByte(EM7180_ADDRESS, EM7180_AlgorithmControl, 0x00); // re-enable algorithm
 
@@ -120,8 +126,12 @@ void SENtral::configureDefault()
   param[3] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte3);
   EM7180_mag_fs = ((int16_t)(param[1]<<8) | param[0]);
   EM7180_acc_fs = ((int16_t)(param[3]<<8) | param[2]);
-  Serial.print("Magnetometer New Full Scale Range: +/-"); Serial.print(EM7180_mag_fs); Serial.println("uT");
-  Serial.print("Accelerometer New Full Scale Range: +/-"); Serial.print(EM7180_acc_fs); Serial.println("g");
+  Serial.print("Magnetometer New Full Scale Range: +/-");
+  Serial.print(EM7180_mag_fs);
+  Serial.println("uT");
+  Serial.print("Accelerometer New Full Scale Range: +/-");
+  Serial.print(EM7180_acc_fs);
+  Serial.println("g");
   writeByte(EM7180_ADDRESS, EM7180_ParamRequest, 0x4B); // Request to read  parameter 75
   param_xfer = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
   while (!(param_xfer==0x4B))
@@ -133,7 +143,9 @@ void SENtral::configureDefault()
   param[2] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte2);
   param[3] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte3);
   EM7180_gyro_fs = ((int16_t)(param[1]<<8) | param[0]);
-  Serial.print("Gyroscope New Full Scale Range: +/-"); Serial.print(EM7180_gyro_fs); Serial.println("dps");
+  Serial.print("Gyroscope New Full Scale Range: +/-");
+  Serial.print(EM7180_gyro_fs);
+  Serial.println("dps");
   writeByte(EM7180_ADDRESS, EM7180_ParamRequest, 0x00); //End parameter transfer
   writeByte(EM7180_ADDRESS, EM7180_AlgorithmControl, 0x00); // re-enable algorithm
 
@@ -161,7 +173,8 @@ void SENtral::configureDefault()
 
   // Check sensor status
   uint8_t sensorStatus = readByte(EM7180_ADDRESS, EM7180_SensorStatus);
-  Serial.print(" EM7180 sensor status = "); Serial.println(sensorStatus);
+  Serial.print(" EM7180 sensor status = ");
+  Serial.println(sensorStatus);
   if (sensorStatus & 0x01) Serial.print("Magnetometer not acknowledging!");
   if (sensorStatus & 0x02) Serial.print("Accelerometer not acknowledging!");
   if (sensorStatus & 0x04) Serial.print("Gyro not acknowledging!");
@@ -181,7 +194,6 @@ void SENtral::configureDefault()
   Serial.print("Actual BaroRate = ");
   Serial.print(readByte(EM7180_ADDRESS, EM7180_ActualBaroRate));
   Serial.println(" Hz");
-  //  Serial.print("Actual TempRate = "); Serial.print(readByte(EM7180_ADDRESS, EM7180_ActualTempRate)); Serial.println(" Hz");
 }
 
 void SENtral::configurePassThru()
@@ -196,11 +208,14 @@ void SENtral::configurePassThru()
   uint8_t data[128];
   M24512DFMreadBytes(M24512DFM_DATA_ADDRESS, 0x00, 0x00, 128, data);
   Serial.println("EEPROM Signature Byte");
-  Serial.print(data[0], HEX); Serial.println("  Should be 0x2A");
-  Serial.print(data[1], HEX); Serial.println("  Should be 0x65");
+  Serial.print(data[0], HEX);
+  Serial.println("  Should be 0x2A");
+  Serial.print(data[1], HEX);
+  Serial.println("  Should be 0x65");
   for (int i = 0; i < 128; i++)
   {
-    Serial.print(data[i], HEX); Serial.print(" ");
+    Serial.print(data[i], HEX);
+    Serial.print(" ");
   }
 
   // // Set up the interrupt pin, its set as active high, push-pull
@@ -210,18 +225,34 @@ void SENtral::configurePassThru()
   // Read the WHO_AM_I register, this is a good test of communication
   Serial.println("MPU9250 9-axis motion sensor...");
   byte c = readByte(MPU9250_ADDRESS, WHO_AM_I_MPU9250);  // Read WHO_AM_I register for MPU-9250
-  Serial.print("MPU9250 "); Serial.print("I AM "); Serial.print(c, HEX); Serial.print(" I should be "); Serial.println(0x71, HEX);
+  Serial.print("MPU9250 ");
+  Serial.print("I AM ");
+  Serial.print(c, HEX);
+  Serial.print(" I should be ");
+  Serial.println(0x71, HEX);
   if (c == 0x71) // WHO_AM_I should always be 0x71
   {
     Serial.println("MPU9250 is online...");
 
     MPU9250SelfTest(SelfTest); // Start by performing self test and reporting values
-    Serial.print("x-axis self test: acceleration trim within : "); Serial.print(SelfTest[0],1); Serial.println("% of factory value");
-    Serial.print("y-axis self test: acceleration trim within : "); Serial.print(SelfTest[1],1); Serial.println("% of factory value");
-    Serial.print("z-axis self test: acceleration trim within : "); Serial.print(SelfTest[2],1); Serial.println("% of factory value");
-    Serial.print("x-axis self test: gyration trim within : "); Serial.print(SelfTest[3],1); Serial.println("% of factory value");
-    Serial.print("y-axis self test: gyration trim within : "); Serial.print(SelfTest[4],1); Serial.println("% of factory value");
-    Serial.print("z-axis self test: gyration trim within : "); Serial.print(SelfTest[5],1); Serial.println("% of factory value");
+    Serial.print("x-axis self test: acceleration trim within : ");
+    Serial.print(SelfTest[0],1);
+    Serial.println("% of factory value");
+    Serial.print("y-axis self test: acceleration trim within : ");
+    Serial.print(SelfTest[1],1);
+    Serial.println("% of factory value");
+    Serial.print("z-axis self test: acceleration trim within : ");
+    Serial.print(SelfTest[2],1);
+    Serial.println("% of factory value");
+    Serial.print("x-axis self test: gyration trim within : ");
+    Serial.print(SelfTest[3],1);
+    Serial.println("% of factory value");
+    Serial.print("y-axis self test: gyration trim within : ");
+    Serial.print(SelfTest[4],1);
+    Serial.println("% of factory value");
+    Serial.print("z-axis self test: gyration trim within : ");
+    Serial.print(SelfTest[5],1);
+    Serial.println("% of factory value");
     delay(1000);
 
     // get sensor resolutions, only need to do this once
@@ -231,8 +262,14 @@ void SENtral::configurePassThru()
 
     Serial.println(" Calibrate gyro and accel");
     accelgyrocalMPU9250(gyroBias, accelBias); // Calibrate gyro and accelerometers, load biases in bias registers
-    Serial.println("accel biases (mg)"); Serial.println(1000.*accelBias[0]); Serial.println(1000.*accelBias[1]); Serial.println(1000.*accelBias[2]);
-    Serial.println("gyro biases (dps)"); Serial.println(gyroBias[0]); Serial.println(gyroBias[1]); Serial.println(gyroBias[2]);
+    Serial.println("accel biases (mg)");
+    Serial.println(1000.*accelBias[0]);
+    Serial.println(1000.*accelBias[1]);
+    Serial.println(1000.*accelBias[2]);
+    Serial.println("gyro biases (dps)");
+    Serial.println(gyroBias[0]);
+    Serial.println(gyroBias[1]);
+    Serial.println(gyroBias[2]);
 
     delay(1000);
 
@@ -243,24 +280,38 @@ void SENtral::configurePassThru()
 
     // Read the WHO_AM_I register of the magnetometer, this is a good test of communication
     byte d = readByte(AK8963_ADDRESS, WHO_AM_I_AK8963);  // Read WHO_AM_I register for AK8963
-    Serial.print("AK8963 "); Serial.print("I AM "); Serial.print(d, HEX); Serial.print(" I should be "); Serial.println(0x48, HEX);
+    Serial.print("AK8963 ");
+    Serial.print("I AM ");
+    Serial.print(d, HEX);
+    Serial.print(" I should be ");
+    Serial.println(0x48, HEX);
 
     delay(1000);
 
     // Get magnetometer calibration from AK8963 ROM
-    initAK8963(magCalibration); Serial.println("AK8963 initialized for active data mode...."); // Initialize device for active mode read of magnetometer
+    initAK8963(magCalibration);
+    Serial.println("AK8963 initialized for active data mode...."); // Initialize device for active mode read of magnetometer
 
     magcalMPU9250(magBias, magScale);
-    Serial.println("AK8963 mag biases (mG)"); Serial.println(magBias[0]); Serial.println(magBias[1]); Serial.println(magBias[2]);
-    Serial.println("AK8963 mag scale (mG)"); Serial.println(magScale[0]); Serial.println(magScale[1]); Serial.println(magScale[2]);
+    Serial.println("AK8963 mag biases (mG)");
+    Serial.println(magBias[0]);
+    Serial.println(magBias[1]);
+    Serial.println(magBias[2]);
+    Serial.println("AK8963 mag scale (mG)");
+    Serial.println(magScale[0]);
+    Serial.println(magScale[1]);
+    Serial.println(magScale[2]);
     delay(2000); // add delay to see results before serial spew of data
 
     if (SerialDebug)
     {
       //  Serial.println("Calibration values: ");
-      Serial.print("X-Axis sensitivity adjustment value "); Serial.println(magCalibration[0], 2);
-      Serial.print("Y-Axis sensitivity adjustment value "); Serial.println(magCalibration[1], 2);
-      Serial.print("Z-Axis sensitivity adjustment value "); Serial.println(magCalibration[2], 2);
+      Serial.print("X-Axis sensitivity adjustment value ");
+      Serial.println(magCalibration[0], 2);
+      Serial.print("Y-Axis sensitivity adjustment value ");
+      Serial.println(magCalibration[1], 2);
+      Serial.print("Z-Axis sensitivity adjustment value ");
+      Serial.println(magCalibration[2], 2);
     }
 
     delay(1000);
@@ -402,7 +453,8 @@ void SENtral::readSensors()
     uint8_t errorStatus = readByte(EM7180_ADDRESS, EM7180_ErrorRegister);
     if (errorStatus != 0x00)  // non-zero value indicates error, what is it?
     {
-      Serial.print(" EM7180 sensor status = "); Serial.println(errorStatus);
+      Serial.print(" EM7180 sensor status = ");
+      Serial.println(errorStatus);
       if (errorStatus == 0x11) Serial.print("Magnetometer failure!");
       if (errorStatus == 0x12) Serial.print("Accelerometer failure!");
       if (errorStatus == 0x14) Serial.print("Gyro failure!");
@@ -986,10 +1038,6 @@ void SENtral::magcalMPU9250(float *dest1, float *dest2)
     if (Mmode == 0x06) delay(12); // at 100 Hz ODR, new mag data is available every 10 ms
   }
 
-  //    Serial.println("mag x min/max:"); Serial.println(mag_max[0]); Serial.println(mag_min[0]);
-  //    Serial.println("mag y min/max:"); Serial.println(mag_max[1]); Serial.println(mag_min[1]);
-  //    Serial.println("mag z min/max:"); Serial.println(mag_max[2]); Serial.println(mag_min[2]);
-
   // Get hard iron correction
   mag_bias[0]  = (mag_max[0] + mag_min[0])/2;  // get average x mag bias in counts
   mag_bias[1]  = (mag_max[1] + mag_min[1])/2;  // get average y mag bias in counts
@@ -1056,7 +1104,6 @@ void SENtral::MPU9250SelfTest(float *destination) // Should return percent devia
 
   for (int ii = 0; ii < 200; ii++)    // get average self-test values of gyro and acclerometer
   {
-
     readBytes(MPU9250_ADDRESS, ACCEL_XOUT_H, 6, &rawData[0]);  // Read the six raw data registers into data array
     aSTAvg[0] += (int16_t)(((int16_t)rawData[0] << 8) | rawData[1]) ;  // Turn the MSB and LSB into a signed 16-bit value
     aSTAvg[1] += (int16_t)(((int16_t)rawData[2] << 8) | rawData[3]) ;
@@ -1124,8 +1171,6 @@ void SENtral::SENtralPassThroughMode()
   // First put SENtral in standby mode
   uint8_t c = readByte(EM7180_ADDRESS, EM7180_AlgorithmControl);
   writeByte(EM7180_ADDRESS, EM7180_AlgorithmControl, c | 0x01);
-  //  c = readByte(EM7180_ADDRESS, EM7180_AlgorithmStatus);
-  //  Serial.print("c = "); Serial.println(c);
   // Verify standby status
   // if(readByte(EM7180_ADDRESS, EM7180_AlgorithmStatus) & 0x01) {
   Serial.println("SENtral in standby mode");
