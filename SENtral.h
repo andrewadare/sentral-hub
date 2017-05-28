@@ -324,11 +324,18 @@ public:
   SENtral();
   ~SENtral() {}
   void printDeviceInfo();
-  void configure(bool passThru=false);
-  void configureDefault();
+  void configure(bool passThru = false, bool warmStart = false);
+  void configureDefault(bool warmStart = false);
   void configurePassThru();
   void readSensors();
   void update();
+  void setWarmStartPassThroughMode();
+  void warmStartResume();
+  void readCalibDataFromEEPROM();
+  void writeCalibDataToEEPROM();
+  void fetchCalibData();
+  void setCalibParams();
+  void getCalibParams();
   void printStatus();
   float uint32_reg_to_float(uint8_t *buf);
   void float_to_bytes(float param_val, uint8_t *buf);
@@ -411,7 +418,9 @@ private:
   int16_t tempCount, rawPressure, rawTemperature;   // pressure, temperature raw count output
   float SelfTest[6];            // holds results of gyro and accelerometer self test
 
+  uint8_t calibParams[35][4];
 
+  // SentralCalibParams calibParams;
 };
 
 #endif // __SENTRAL_H__

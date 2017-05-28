@@ -22,17 +22,21 @@ SENtral::SENtral()
     SelfTest[i] = 0;
 
   declination = 0;
+
+  for (int i = 0; i < 35; i++)
+    for (int j = 0; j < 4;   j++)
+      calibParams[i][j] = 0;
 }
 
-void SENtral::configure(bool passThru)
+void SENtral::configure(bool passThru, bool warmStart)
 {
   if (passThru)
     configurePassThru();
   else
-    configureDefault();
+    configureDefault(warmStart);
 }
 
-void SENtral::configureDefault()
+void SENtral::configureDefault(bool warmStart)
 {
   uint8_t param[4];             // used for param transfer
   uint16_t EM7180_mag_fs, EM7180_acc_fs, EM7180_gyro_fs; // EM7180 sensor full scale ranges
@@ -42,6 +46,10 @@ void SENtral::configureDefault()
   writeByte(EM7180_ADDRESS, EM7180_HostControl, 0x00); // set SENtral in initialized state to configure registers
   writeByte(EM7180_ADDRESS, EM7180_PassThruControl, 0x00); // make sure pass through mode is off
   writeByte(EM7180_ADDRESS, EM7180_HostControl, 0x01); // Force initialize
+
+  if (warmStart)
+    setCalibParams();
+
   writeByte(EM7180_ADDRESS, EM7180_HostControl, 0x00); // set SENtral in initialized state to configure registers
 
   //Setup LPF bandwidth (BEFORE setting ODR's)
@@ -366,6 +374,180 @@ void SENtral::configurePassThru()
     Serial.println(c, HEX);
     while (1) ; // Loop forever if communication doesn't happen
   }
+}
+
+void SENtral::fetchCalibData()
+{
+  setWarmStartPassThroughMode();
+  readCalibDataFromEEPROM();
+  warmStartResume();
+}
+
+void SENtral::setWarmStartPassThroughMode()
+{
+  uint8_t stat = 0;
+
+  // First put SENtral in standby mode
+  writeByte(EM7180_ADDRESS, EM7180_AlgorithmControl, 0x01);
+  delay(5);
+
+  // Place SENtral in pass-through mode
+  writeByte(EM7180_ADDRESS, EM7180_PassThruControl, 0x01);
+  delay(5);
+  stat = readByte(EM7180_ADDRESS, EM7180_PassThruStatus);
+  while (!(stat & 0x01))
+  {
+    stat = readByte(EM7180_ADDRESS, EM7180_PassThruStatus);
+    delay(5);
+  }
+}
+
+void SENtral::warmStartResume()
+{
+  uint8_t stat = 0;
+
+  // Cancel pass-through mode
+  writeByte(EM7180_ADDRESS, EM7180_PassThruControl, 0x00);
+  delay(5);
+  stat = readByte(EM7180_ADDRESS, EM7180_PassThruStatus);
+  while ((stat & 0x01))
+  {
+    stat = readByte(EM7180_ADDRESS, EM7180_PassThruStatus);
+    delay(5);
+  }
+
+  // Re-start algorithm
+  writeByte(EM7180_ADDRESS, EM7180_AlgorithmControl, 0x00);
+  delay(5);
+  stat = readByte(EM7180_ADDRESS, EM7180_AlgorithmStatus);
+  while ((stat & 0x01))
+  {
+    stat = readByte(EM7180_ADDRESS, EM7180_AlgorithmStatus);
+    delay(5);
+  }
+}
+
+void SENtral::readCalibDataFromEEPROM()
+{
+  uint8_t data[140];
+  uint8_t paramnum;
+  M24512DFMreadBytes(M24512DFM_DATA_ADDRESS, 0x7f, 0x80, 12, &data[128]); // Page 255
+  delay(100);
+  M24512DFMreadBytes(M24512DFM_DATA_ADDRESS, 0x7f, 0x00, 128, &data[0]); // Page 254
+  for (paramnum = 0; paramnum < 35; paramnum++) // 35 parameters
+  {
+    for (uint8_t i = 0; i < 4; i++)
+    {
+      calibParams[paramnum][i] = data[(paramnum * 4 + i)];
+    }
+  }
+}
+
+void SENtral::writeCalibDataToEEPROM()
+{
+  uint8_t data[140];
+  uint8_t paramnum;
+  for (paramnum = 0; paramnum < 35; paramnum++) // 35 parameters
+  {
+    for (uint8_t i = 0; i < 4; i++)
+    {
+      data[(paramnum * 4 + i)] = calibParams[paramnum][i];
+    }
+  }
+  M24512DFMwriteBytes(M24512DFM_DATA_ADDRESS, 0x7f, 0x80, 12, &data[128]); // Page 255
+  delay(100);
+  M24512DFMwriteBytes(M24512DFM_DATA_ADDRESS, 0x7f, 0x00, 128, &data[0]); // Page 254
+}
+
+void SENtral::setCalibParams()
+{
+  uint8_t param = 1;
+  uint8_t STAT;
+
+  // Parameter is the decimal value with the MSB set high to indicate a paramter write processs
+  param = param | 0x80;
+  writeByte(EM7180_ADDRESS, EM7180_LoadParamByte0, calibParams[0][0]);
+  writeByte(EM7180_ADDRESS, EM7180_LoadParamByte1, calibParams[0][1]);
+  writeByte(EM7180_ADDRESS, EM7180_LoadParamByte2, calibParams[0][2]);
+  writeByte(EM7180_ADDRESS, EM7180_LoadParamByte3, calibParams[0][3]);
+  writeByte(EM7180_ADDRESS, EM7180_ParamRequest, param);
+
+  // Request parameter transfer procedure
+  writeByte(EM7180_ADDRESS, EM7180_AlgorithmControl, 0x80);
+
+  // Check the parameter acknowledge register and loop until the result matches parameter request byte
+  STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
+  while (!(STAT == param))
+  {
+    STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
+  }
+  for (uint8_t i = 1; i < 35; i++)
+  {
+    param = (i + 1) | 0x80;
+    writeByte(EM7180_ADDRESS, EM7180_LoadParamByte0, calibParams[i][0]);
+    writeByte(EM7180_ADDRESS, EM7180_LoadParamByte1, calibParams[i][1]);
+    writeByte(EM7180_ADDRESS, EM7180_LoadParamByte2, calibParams[i][2]);
+    writeByte(EM7180_ADDRESS, EM7180_LoadParamByte3, calibParams[i][3]);
+    writeByte(EM7180_ADDRESS, EM7180_ParamRequest, param);
+
+    // Check the parameter acknowledge register and loop until the result matches parameter request byte
+    STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
+    while (!(STAT == param))
+    {
+      STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
+    }
+  }
+  // Parameter request = 0 to end parameter transfer process
+  writeByte(EM7180_ADDRESS, EM7180_ParamRequest, 0x00);
+}
+
+void SENtral::getCalibParams()
+{
+  uint8_t param = 1;
+  uint8_t STAT;
+
+  writeByte(EM7180_ADDRESS, EM7180_ParamRequest, param);
+  delay(10);
+
+  // Request parameter transfer procedure
+  writeByte(EM7180_ADDRESS, EM7180_AlgorithmControl, 0x80);
+  delay(10);
+
+  // Check the parameter acknowledge register and loop until the result matches parameter request byte
+  STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
+  while (!(STAT == param))
+  {
+    STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
+  }
+
+  // Parameter is the decimal value with the MSB set low (default) to indicate a paramter read processs
+  calibParams[0][0] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte0);
+  calibParams[0][1] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte1);
+  calibParams[0][2] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte2);
+  calibParams[0][3] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte3);
+
+  for (uint8_t i = 1; i < 35; i++)
+  {
+    param = (i + 1);
+    writeByte(EM7180_ADDRESS, EM7180_ParamRequest, param);
+    delay(10);
+
+    // Check the parameter acknowledge register and loop until the result matches parameter request byte
+    STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
+    while (!(STAT == param))
+    {
+      STAT = readByte(EM7180_ADDRESS, EM7180_ParamAcknowledge);
+    }
+    calibParams[i][0] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte0);
+    calibParams[i][1] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte1);
+    calibParams[i][2] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte2);
+    calibParams[i][3] = readByte(EM7180_ADDRESS, EM7180_SavedParamByte3);
+  }
+  // Parameter request = 0 to end parameter transfer process
+  writeByte(EM7180_ADDRESS, EM7180_ParamRequest, 0x00);
+
+  // Re-start algorithm
+  writeByte(EM7180_ADDRESS, EM7180_AlgorithmControl, 0x00);
 }
 
 void SENtral::printStatus()

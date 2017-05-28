@@ -55,6 +55,8 @@ void setup()
 
   imu.I2Cscan(); // should detect SENtral at 0x28
   imu.printDeviceInfo();
+
+  imu.fetchCalibData();
   imu.configure();
 
   // Set declination here to use true north instead of mag. north.
