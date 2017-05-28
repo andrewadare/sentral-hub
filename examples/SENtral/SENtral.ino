@@ -14,12 +14,12 @@ void printSentralData()
   Serial.print("\nAltimeter temperature = ");
   Serial.print(imu.temperature, 2);
   Serial.print(" C, "); // temperature in degrees Celsius
-  Serial.print(9.*imu.temperature/5. + 32., 2);
+  Serial.print(9.*imu.temperature / 5. + 32., 2);
   Serial.println(" F"); // temperature in degrees Fahrenheit
   Serial.print("Altimeter pressure = ");
   Serial.print(imu.pressure, 2);
   Serial.println(" mbar");// pressure in millibar
-  imu.altitude = 145366.45f*(1.0f - pow((imu.pressure/1013.25f), 0.190284f));
+  imu.altitude = 145366.45f * (1.0f - pow((imu.pressure / 1013.25f), 0.190284f));
   Serial.print("Altitude = ");
   Serial.print(imu.altitude, 2);
   Serial.println(" feet");
@@ -56,8 +56,10 @@ void setup()
   imu.I2Cscan(); // should detect SENtral at 0x28
   imu.printDeviceInfo();
 
-  imu.fetchCalibData();
-  imu.configure();
+  // If true, use magnetometer calibration data stored in EEPROM. No accel.
+  // calibrations are applied.
+  // This presupposes that the "warm start" calibration procedure has been run!
+  imu.configure(true);
 
   // Set declination here to use true north instead of mag. north.
   // Mag. declination in Boulder, CO (39d 58m 47s N, 105d 15m 9s W):

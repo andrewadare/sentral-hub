@@ -324,8 +324,7 @@ public:
   SENtral();
   ~SENtral() {}
   void printDeviceInfo();
-  void configure(bool passThru = false, bool warmStart = false);
-  void configureDefault(bool warmStart = false);
+  void configure(bool warmStart = false);
   void configurePassThru();
   void readSensors();
   void update();

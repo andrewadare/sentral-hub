@@ -28,16 +28,13 @@ SENtral::SENtral()
       calibParams[i][j] = 0;
 }
 
-void SENtral::configure(bool passThru, bool warmStart)
+// Configure for normal running. If warmStart is true, magnetometer/gyro/accel
+// calibration parameters from the calibParams array will be written to the EM7180.
+void SENtral::configure(bool warmStart)
 {
-  if (passThru)
-    configurePassThru();
-  else
-    configureDefault(warmStart);
-}
+  if (warmStart)
+    fetchCalibData();
 
-void SENtral::configureDefault(bool warmStart)
-{
   uint8_t param[4];             // used for param transfer
   uint16_t EM7180_mag_fs, EM7180_acc_fs, EM7180_gyro_fs; // EM7180 sensor full scale ranges
 
@@ -376,6 +373,7 @@ void SENtral::configurePassThru()
   }
 }
 
+// Read calibration data from EEPROM into RAM on the host MCU (calibParams)
 void SENtral::fetchCalibData()
 {
   setWarmStartPassThroughMode();
@@ -459,6 +457,7 @@ void SENtral::writeCalibDataToEEPROM()
   M24512DFMwriteBytes(M24512DFM_DATA_ADDRESS, 0x7f, 0x00, 128, &data[0]); // Page 254
 }
 
+// Write calibration data from the host MCU to registers on the EM7180
 void SENtral::setCalibParams()
 {
   uint8_t param = 1;
@@ -501,6 +500,8 @@ void SENtral::setCalibParams()
   writeByte(EM7180_ADDRESS, EM7180_ParamRequest, 0x00);
 }
 
+// Read calibration data from registers on the EM7180 and assign to the
+// calibParams array
 void SENtral::getCalibParams()
 {
   uint8_t param = 1;
