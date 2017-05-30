@@ -5,7 +5,9 @@
   assert && assert( guides, 'guides module not loaded.' );
 
   // Module globals
-  var ws, scene, camera, renderer, controls, box;
+  var ws, scene, camera, renderer, controls, box, arrow;
+  var accelDirection;
+  var chipRotation = new THREE.Vector3();
 
   init();
   animate();
@@ -27,6 +29,11 @@
     var boxMaterial = new THREE.MeshLambertMaterial( { color: 0x7f7f7f } );
     box = new THREE.Mesh( boxGeom, boxMaterial );
     box.position.set( 2, 2, 1 );
+
+    // Acceleration arrow: direction, origin, length, color
+    accelDirection = new THREE.Vector3( 1, 1, 0 ).normalize();
+    arrow = new THREE.ArrowHelper( accelDirection, new THREE.Vector3(), 1 );
+    scene.add( arrow );
 
     // Camera
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -58,15 +65,11 @@
     // HORIZONTAL GRID
     scene.add( guides.grid( { size: 100, scale: 1, orientation: 'z' } ) );
 
-    // AXES
-    var localAxes = guides.axes( { axisLength: 3, axisRadius: 0.02, axisTess: 50 } );
-    localAxes.forEach( function( item ) {
-      box.add( item );
-    } );
-    var axes = guides.axes( { axisLength: 10, axisRadius: 0.05, axisTess: 50 } );
-    axes.forEach( function( item ) {
-      scene.add( item );
-    } );
+    // Axis guides: r,g,b = x,y,z
+    var axes = new THREE.AxisHelper( 10 );
+    axes.position.set( 0, 0, 0.001 ); // prevent z-fighting
+    scene.add( axes );
+    box.add( new THREE.AxisHelper( 3 ) );
 
     // CAMERA TRACKBALL CONTROLS
     addControls();
@@ -114,6 +117,15 @@
     var yaw = -Math.PI / 180 * data.yaw;
     box.rotation.set( pitch, roll, yaw );
 
+
+    // Experimental - acceleration arrow
+    // chipRotation.set(pitch, roll, yaw);
+    // accelDirection.set( data.ax, data.ay, data.az ).normalize();
+    // accelDirection.set( data.ay, data.ax, data.az )
+    // var l = accelDirection.length();
+    // accelDirection.sub(chipRotation).normalize();
+    // arrow.setDirection( accelDirection );
+    // arrow.setLength( l, 0.2 * l, 0.04 * l );
     render();
   }
 
